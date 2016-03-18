@@ -11,7 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160316222336) do
+ActiveRecord::Schema.define(version: 20160318144419) do
+
+  create_table "seals", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "stamp"
+    t.string   "text"
+  end
+
+  create_table "seals_users", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "seal_id", null: false
+  end
+
+  add_index "seals_users", ["user_id", "seal_id"], name: "index_seals_users_on_user_id_and_seal_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
