@@ -5,12 +5,15 @@ class SealsController < ApplicationController
   # GET /seals
   # GET /seals.json
   def index
-    @seals = Seal.all
+    @seals = owned_seals
   end
 
   # GET /seals/1
   # GET /seals/1.json
   def show
+    param = params["stamp"]
+    @seal = Seal.find_by(stamp: param)
+    @view_auth = is_viewer?(@seal)
   end
 
   # GET /seals/new
@@ -25,12 +28,20 @@ class SealsController < ApplicationController
   # POST /seals
   # POST /seals.json
   def create
-    @seal = Seal.new(seal_params)
-
+    users = seal_params["users"]
+    user_params = process_users(users)
+    @seal = Seal.new(text: seal_params["text"])
+    @seal.stamp = BCrypt::Password.create(@seal.id).checksum.gsub(/[\.]/, '')
     respond_to do |format|
       if @seal.save
-        format.html { redirect_to @seal, notice: 'Seal was successfully created.' }
-        format.json { render :show, status: :created, location: @seal }
+        @seal.seals_users << SealsUser.create(user_id: current_user.id,
+                                              seal_id: @seal.id,
+                                              owner: true)
+        format.html { redirect_to controller: :seals,
+                                  action: :show,
+                                  stamp: @seal.stamp,
+                                  notice: 'Seal was successfully created.' }
+        format.json { render json: {stamp: @seal.stamp, status: "ok"} }
       else
         format.html { render :new }
         format.json { render json: @seal.errors, status: :unprocessable_entity }
@@ -63,13 +74,44 @@ class SealsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_seal
-      @seal = Seal.find_by(stamp: params[:stamp])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_seal
+    @seal = Seal.find_by(stamp: params[:stamp])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def seal_params
-      params.fetch(:seal, {})
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def seal_params
+    params.fetch(:seal)
+  end
+
+  def is_viewer?(seal)
+    current_user.seals.exists?(seal.id)
+  end
+
+  def owned_seals
+    current_user.owned_seals
+  end
+
+  def all_users_not_nil?(user_params)
+    user_params.all? { |user| !user.id.nil?}
+  end
+
+  def user_param(id, name, verifier, terminator)
+    if id.nil?
+      {id: nil, name: name}
+    else
+      {id: id, name: name, verifier: verifier, terminator: terminator}
     end
+  end
+
+  def process_users(users)
+    if users.nil?
+      []
+    else
+      users.collect { |user| user_param(User.find_by(name: user.username),
+                                        user.username,
+                                        user.verifier,
+                                        user.terminator)}
+    end
+  end
 end

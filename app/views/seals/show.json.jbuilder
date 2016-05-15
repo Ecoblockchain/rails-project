@@ -1,1 +1,1 @@
-json.extract! @seal, :id, :created_at, :updated_at
+json.extract! @seal, :stamp, :text, :created_at, :updated_at

@@ -1,0 +1,8 @@
+<% if signed_in? %>
+    <%= link_to "Log Out", logout_path %>
+    <%= link_to "Users", users_path %>
+    <%= link_to "Seals", seals_path %>
+<% else %>
+    <%= link_to "Sign Up", signup_path %>
+    <%= link_to "Log In", login_path %>
+<% end %>

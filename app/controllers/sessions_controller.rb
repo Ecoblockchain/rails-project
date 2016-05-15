@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_filter :store_location
+
   def new
   end
 
@@ -6,7 +8,7 @@ class SessionsController < ApplicationController
     user = User.find_by name: params[:name]
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
-      redirect_to user_path(user), notice: "Welcome back!"
+      redirect_to prev_location
     else
       redirect_to :back, notice: "Username or password incorrect."
     end

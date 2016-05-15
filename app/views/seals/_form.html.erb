@@ -1,17 +1,27 @@
-<%= form_for(@seal) do |f| %>
-  <% if @seal.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@seal.errors.count, "error") %> prohibited this seal from being saved:</h2>
+<div>
+    <% if @seal.errors.any? %>
+        <div id="error_explanation">
+            <h2><%= pluralize(@seal.errors.count, "error") %> prohibited this seal from being saved:</h2>
 
-      <ul>
-      <% @seal.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+            <ul>
+                <% @seal.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+        <label for="seal_text">Text</label><br>
+        <textarea name="seal[text]" id="seal_text">
+        </textarea>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+    <div id="seal-name-fields">
+        <p class="none-text">Click 'Add User' to attach users to this seal.</p>
+    </div>
+    <button id="seal-name-fields-button">Add User</button><br>
+    <div class="actions">
+        <input type="submit" id="create-seal" name="commit" value="Create Seal" />
+    </div>
+</div>

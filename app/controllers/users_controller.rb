@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_filter :ensure_json_request, only: [:names]
 
   # GET /users
   # GET /users.json
@@ -10,6 +11,12 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+  end
+
+  #GET /usernames.json
+  def names
+    users = User.all
+    @names = users.collect{ |user| user.name }
   end
 
   # GET /users/new

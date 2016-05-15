@@ -1,3 +1,30 @@
 // Place all the styles related to the application controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+/*
+ *= require scaffolds
+ *= require_tree ./app-wide
+ *= require_self
+ */
+
+body {
+    background-color: #D3F4F5;
+    margin: 0;
+}
+
+main.margined {
+    max-width: 970px;
+    margin: 0 auto;
+    background-color: #F3FBFD;
+}
+
+.content-box {
+    padding: 5px 40px 20px 40px;
+    min-height: 50vh;
+}
+
+nav {
+    background-color: #7FADAF;
+    padding: 8px;
+    margin-bottom: 8px;
+}

@@ -2,11 +2,15 @@ Rails.application.routes.draw do
   root 'users#index'
   resources :users
   resource :session, only: [:new, :create, :destroy]
+  resources :seals, only: [:index, :new, :create]
+  get 'usernames', to: 'users#names'
   get 'signup', to: 'users#new', as: :signup
   get 'login', to: 'sessions#new', as: :login
   get 'logout', to: 'sessions#destroy', as: :logout
-  get '/seals/:stamp', to: 'seals#show'
-  get '/s/:stamp', to: redirect('/seals/%{stamp}')
+  get '/seals/:stamp', to: 'seals#show',
+      constraints: {:stamp => /([^\/]+?)(?=\.json|\.html|$|\/)/}
+  get '/s/:stamp', to: redirect('/seals/%{stamp}'),
+      constraints: {:stamp => /([^\/]+?)(?=\.json|\.html|$|\/)/}
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
